@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wagio — Get paid in minutes, not months</title>
+  <meta name="description" content="AI payment agent for LATAM freelancers. Generate USDC invoices and receive local currency automatically via Telegram." />
+  <meta property="og:title" content="Wagio — Get paid in minutes, not months" />
+  <meta property="og:description" content="AI payment agent for LATAM freelancers. Generate USDC invoices and receive local currency automatically via Telegram." />
+  <meta property="og:image" content="https://og-image.wagio.app/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            solana: '#9945FF',
+            'solana-green': '#14F195',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { background: #000; color: #fff; }
+    .gradient-text {
+      background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card {
+      background: #0f0f0f;
+      border: 1px solid #1a1a1a;
+    }
+    .glow {
+      box-shadow: 0 0 60px rgba(153, 69, 255, 0.15);
+    }
+    .step-line::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: calc(50% + 32px);
+      width: calc(100% - 64px);
+      height: 1px;
+      background: linear-gradient(90deg, #9945FF, #14F195);
+      opacity: 0.3;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .pulse { animation: pulse-glow 2s ease-in-out infinite; }
+  </style>
+</head>
+<body class="font-sans antialiased">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-md bg-black/80">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl font-bold tracking-tight">wagio</span>
+        <span class="text-xs px-2 py-0.5 rounded-full border border-solana-green/30 text-solana-green font-medium">
+          BETA
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://github.com/owervanz/wagio" target="_blank"
+           class="text-sm text-gray-400 hover:text-white transition-colors hidden sm:block">
+          GitHub
+        </a>
+        <a href="https://t.me/WagioApp_bot" target="_blank"
+           class="text-sm px-4 py-2 rounded-lg font-medium transition-all"
+           style="background: linear-gradient(135deg, #9945FF, #14F195); color: #000;">
+          Try on Telegram →
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="pt-40 pb-24 px-6 text-center relative overflow-hidden">
+    <!-- Background glow -->
+    <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-20"
+         style="background: radial-gradient(ellipse, #9945FF 0%, transparent 70%); filter: blur(60px);"></div>
+
+    <div class="relative max-w-4xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 text-sm text-gray-400 mb-8">
+        <span class="w-2 h-2 rounded-full bg-solana-green pulse"></span>
+        Built on Solana · Solana Frontier Hackathon 2026
+      </div>
+
+      <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight leading-none mb-6">
+        Get paid in<br/>
+        <span class="gradient-text">minutes, not months</span>
+      </h1>
+
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        AI payment agent for LATAM freelancers. Tell Wagio about your work,
+        get a payment link instantly, receive local currency automatically.
+        <br/><span class="text-white">No crypto knowledge needed.</span>
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="https://t.me/WagioApp_bot" target="_blank"
+           class="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-semibold transition-all hover:scale-105 text-black"
+           style="background: linear-gradient(135deg, #14F195, #9945FF);">
+          Try Wagio on Telegram →
+        </a>
+        <a href="https://github.com/owervanz/wagio" target="_blank"
+           class="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-medium border border-white/10 hover:border-white/30 transition-all">
+          View Source Code
+        </a>
+      </div>
+
+      <!-- Terminal mockup -->
+      <div class="mt-16 max-w-2xl mx-auto card rounded-2xl overflow-hidden glow text-left">
+        <div class="flex items-center gap-2 px-5 py-3 border-b border-white/5">
+          <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+          <div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+          <span class="ml-2 text-xs text-gray-500">Telegram — Wagio Bot</span>
+        </div>
+        <div class="p-6 space-y-4 text-sm font-mono">
+          <div class="flex gap-3">
+            <span class="text-gray-600 shrink-0">You</span>
+            <span class="text-gray-300">Finished a $400 logo design for Acme Corp 🎨</span>
+          </div>
+          <div class="flex gap-3">
+            <span class="text-solana-green shrink-0">Wagio</span>
+            <div class="text-gray-300">
+              ✅ Invoice created<br/>
+              Client: Acme Corp<br/>
+              Amount: <span class="text-white font-semibold">$400 USDC</span><br/>
+              Fee: $3.96 (0.99%)<br/>
+              You'll receive: <span class="text-solana-green font-semibold">$396.04 USDC</span><br/>
+              <br/>
+              📲 QR sent — share it with your client<br/>
+              <span class="text-gray-500">I'll notify you when payment arrives 🔔</span>
+            </div>
+          </div>
+          <div class="border-t border-white/5 pt-4 flex gap-3">
+            <span class="text-solana-green shrink-0">Wagio</span>
+            <div class="text-gray-300">
+              💰 Payment received on-chain (2s)<br/>
+              Converting 396 USDC → ARS...<br/>
+              <span class="text-solana-green font-semibold">✅ 515,196 ARS sent to your CVU</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="py-16 px-6 border-y border-white/5">
+    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <div class="text-4xl font-extrabold gradient-text">30-60</div>
+        <div class="text-gray-500 text-sm mt-1">days to get paid today</div>
+      </div>
+      <div>
+        <div class="text-4xl font-extrabold gradient-text">6-10%</div>
+        <div class="text-gray-500 text-sm mt-1">lost in fees (Payoneer)</div>
+      </div>
+      <div>
+        <div class="text-4xl font-extrabold gradient-text">20M+</div>
+        <div class="text-gray-500 text-sm mt-1">LATAM freelancers</div>
+      </div>
+      <div>
+        <div class="text-4xl font-extrabold gradient-text">0.99%</div>
+        <div class="text-gray-500 text-sm mt-1">Wagio's total fee</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">How it works</h2>
+        <p class="text-gray-400 text-lg">Three steps. Sixty seconds.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 relative">
+        <!-- Step 1 -->
+        <div class="card rounded-2xl p-8 relative">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-black font-bold text-lg mb-6"
+               style="background: linear-gradient(135deg, #14F195, #9945FF);">1</div>
+          <h3 class="text-lg font-semibold mb-3">Tell Wagio about your work</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Just type in Telegram: "I finished a $500 website for Acme Corp." The AI understands and creates your invoice instantly.
+          </p>
+        </div>
+        <!-- Step 2 -->
+        <div class="card rounded-2xl p-8">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-black font-bold text-lg mb-6"
+               style="background: linear-gradient(135deg, #14F195, #9945FF);">2</div>
+          <h3 class="text-lg font-semibold mb-3">Client pays the QR</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Share the QR code or payment link. Client pays in USDC using any Solana wallet. Settlement confirms in ~2 seconds.
+          </p>
+        </div>
+        <!-- Step 3 -->
+        <div class="card rounded-2xl p-8">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-black font-bold text-lg mb-6"
+               style="background: linear-gradient(135deg, #14F195, #9945FF);">3</div>
+          <h3 class="text-lg font-semibold mb-3">Receive local currency</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Wagio detects the payment on-chain, converts USDC to your local currency, and deposits it to your bank. You get a notification.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VS COMPARISON -->
+  <section class="py-16 px-6 border-y border-white/5">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">Wagio vs Traditional</h2>
+      <div class="card rounded-2xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/5">
+              <th class="text-left p-5 text-gray-500 font-medium"></th>
+              <th class="p-5 text-gray-400 font-medium">Payoneer / Wise</th>
+              <th class="p-5 font-semibold" style="color: #14F195;">Wagio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-white/5">
+              <td class="p-5 text-gray-400">Settlement time</td>
+              <td class="p-5 text-center text-gray-500">5–10 business days</td>
+              <td class="p-5 text-center font-semibold" style="color: #14F195;">~60 seconds</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="p-5 text-gray-400">Total fees</td>
+              <td class="p-5 text-center text-gray-500">3–10%</td>
+              <td class="p-5 text-center font-semibold" style="color: #14F195;">0.99%</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="p-5 text-gray-400">Setup required</td>
+              <td class="p-5 text-center text-gray-500">30 min + KYC</td>
+              <td class="p-5 text-center font-semibold" style="color: #14F195;">1 message</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="p-5 text-gray-400">Argentina support</td>
+              <td class="p-5 text-center text-gray-500">❌ Limited</td>
+              <td class="p-5 text-center" style="color: #14F195;">✅ CVU/ARS</td>
+            </tr>
+            <tr>
+              <td class="p-5 text-gray-400">AI invoice creation</td>
+              <td class="p-5 text-center text-gray-500">❌ Manual</td>
+              <td class="p-5 text-center" style="color: #14F195;">✅ Natural language</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTRIES -->
+  <section class="py-24 px-6">
+    <div class="max-w-5xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4">Built for LATAM</h2>
+      <p class="text-gray-400 mb-12">Local currency deposits from day one</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="card rounded-2xl p-6">
+          <div class="text-4xl mb-3">🇦🇷</div>
+          <div class="font-semibold">Argentina</div>
+          <div class="text-gray-500 text-sm">ARS via CVU</div>
+          <div class="text-xs mt-2" style="color: #14F195;">2–5 min</div>
+        </div>
+        <div class="card rounded-2xl p-6">
+          <div class="text-4xl mb-3">🇲🇽</div>
+          <div class="font-semibold">Mexico</div>
+          <div class="text-gray-500 text-sm">MXN via SPEI</div>
+          <div class="text-xs mt-2" style="color: #14F195;">2–10 min</div>
+        </div>
+        <div class="card rounded-2xl p-6">
+          <div class="text-4xl mb-3">🇧🇷</div>
+          <div class="font-semibold">Brazil</div>
+          <div class="text-gray-500 text-sm">BRL via PIX</div>
+          <div class="text-xs mt-2" style="color: #14F195;">1–3 min</div>
+        </div>
+        <div class="card rounded-2xl p-6">
+          <div class="text-4xl mb-3">🇨🇴</div>
+          <div class="font-semibold">Colombia</div>
+          <div class="text-gray-500 text-sm">COP via PSE</div>
+          <div class="text-xs mt-2" style="color: #14F195;">10–30 min</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section class="py-16 px-6 border-y border-white/5">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="text-gray-500 text-sm mb-8 uppercase tracking-widest">Powered by</p>
+      <div class="flex flex-wrap items-center justify-center gap-6">
+        <div class="flex items-center gap-2 px-4 py-2 card rounded-full text-sm text-gray-300">
+          <span>⬡</span> Solana
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 card rounded-full text-sm text-gray-300">
+          <span>💠</span> USDC
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 card rounded-full text-sm text-gray-300">
+          <span>🤖</span> Google Gemini
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 card rounded-full text-sm text-gray-300">
+          <span>⚡</span> Helius
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 card rounded-full text-sm text-gray-300">
+          <span>✈️</span> Telegram
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 card rounded-full text-sm text-gray-300">
+          <span>🏦</span> Bitso
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-32 px-6 text-center relative overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full opacity-20"
+         style="background: radial-gradient(ellipse, #14F195 0%, transparent 70%); filter: blur(80px);"></div>
+    <div class="relative max-w-2xl mx-auto">
+      <h2 class="text-4xl sm:text-5xl font-extrabold mb-6">
+        Stop waiting.<br/>
+        <span class="gradient-text">Start earning.</span>
+      </h2>
+      <p class="text-gray-400 text-lg mb-10">
+        Wagio is live on Telegram. No downloads, no wallets, no crypto knowledge required.
+      </p>
+      <a href="https://t.me/WagioApp_bot" target="_blank"
+         class="inline-block px-10 py-5 rounded-xl text-lg font-semibold text-black transition-all hover:scale-105"
+         style="background: linear-gradient(135deg, #14F195, #9945FF);">
+        Open Wagio on Telegram →
+      </a>
+      <p class="mt-4 text-gray-600 text-sm">Free to start · 0.99% fee only when you get paid</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 py-10 px-6">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="font-bold">wagio</span>
+        <span class="text-gray-600 text-sm">·</span>
+        <span class="text-gray-600 text-sm">Built for Solana Frontier Hackathon 2026</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-gray-500">
+        <a href="https://github.com/owervanz/wagio" target="_blank"
+           class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://t.me/WagioApp_bot" target="_blank"
+           class="hover:text-white transition-colors">Telegram</a>
+        <a href="https://colosseum.com/frontier" target="_blank"
+           class="hover:text-white transition-colors">Hackathon</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
