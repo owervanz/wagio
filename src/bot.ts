@@ -6,6 +6,53 @@ import type { Country } from './db/supabase.js'
 
 export const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!)
 
+// ─── Rate limiter ─────────────────────────────────────────────────────────────
+
+const OWNER_ID = 0 // ← poné tu Telegram ID acá para tener acceso ilimitado
+const LIMIT_PER_HOUR = 10   // mensajes al agente AI por hora
+const LIMIT_PER_DAY  = 30   // mensajes al agente AI por día
+
+interface UserUsage {
+  hourCount: number
+  dayCount:  number
+  hourReset: number   // timestamp
+  dayReset:  number   // timestamp
+}
+
+const usage = new Map<number, UserUsage>()
+
+function checkRateLimit(telegramId: number): { allowed: boolean; reason?: string } {
+  if (telegramId === OWNER_ID) return { allowed: true }
+
+  const now = Date.now()
+  const u = usage.get(telegramId) ?? {
+    hourCount: 0, dayCount: 0,
+    hourReset: now + 3_600_000,   // 1 hora
+    dayReset:  now + 86_400_000,  // 24 horas
+  }
+
+  // Reset counters if windows expired
+  if (now > u.hourReset) { u.hourCount = 0; u.hourReset = now + 3_600_000 }
+  if (now > u.dayReset)  { u.dayCount  = 0; u.dayReset  = now + 86_400_000 }
+
+  if (u.dayCount >= LIMIT_PER_DAY) {
+    const mins = Math.ceil((u.dayReset - now) / 60_000)
+    return { allowed: false, reason: `Alcanzaste el límite diario (${LIMIT_PER_DAY} mensajes). Volvé en ${mins} minutos.` }
+  }
+
+  if (u.hourCount >= LIMIT_PER_HOUR) {
+    const mins = Math.ceil((u.hourReset - now) / 60_000)
+    return { allowed: false, reason: `Límite por hora alcanzado (${LIMIT_PER_HOUR} mensajes). Volvé en ${mins} minutos.` }
+  }
+
+  u.hourCount++
+  u.dayCount++
+  usage.set(telegramId, u)
+  return { allowed: true }
+}
+
+// ─── Keyboard ─────────────────────────────────────────────────────────────────
+
 const COUNTRY_OPTIONS = Markup.keyboard([
   ['🇦🇷 Argentina (AR)', '🇲🇽 México (MX)'],
   ['🇧🇷 Brasil (BR)', '🇨🇴 Colombia (CO)'],
@@ -127,6 +174,13 @@ bot.on(message('text'), async ctx => {
 
   // Handle all other messages via Claude agent
   try {
+    // Check rate limit before calling Gemini
+    const limit = checkRateLimit(telegramId)
+    if (!limit.allowed) {
+      await ctx.reply(`⏳ ${limit.reason}`)
+      return
+    }
+
     await ctx.sendChatAction('typing')
     const result = await runAgent(text, telegramId, user.country as Country | undefined)
 
