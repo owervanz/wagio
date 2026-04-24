@@ -13,9 +13,10 @@ const NODE_ENV = process.env.NODE_ENV ?? 'development'
 
 const required = [
   'TELEGRAM_BOT_TOKEN',
-  'GOOGLE_API_KEY',
+  'GROQ_API_KEY',
   'SOLANA_RPC_URL',
   'HELIUS_API_KEY',
+  'HELIUS_AUTH_HEADER',
   'USDC_MINT',
   'MERCHANT_WALLET_ADDRESS',
   'SUPABASE_URL',

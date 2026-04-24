@@ -1,5 +1,5 @@
 import { offrampToLocal, type OfframpResult } from '../offramp/bitso.js'
-import { getInvoiceByReference, updateInvoice, getUserByTelegramId } from '../db/supabase.js'
+import { db, updateInvoice, getUserByTelegramId, type Invoice } from '../db/supabase.js'
 
 export interface OfframpInput {
   invoice_id: string
@@ -19,27 +19,23 @@ export async function initiateOfframpTool(
     throw new Error('No country set. Please configure your country first with /setup.')
   }
 
-  // Find invoice
-  const { data: invoices } = await import('../db/supabase.js').then(m =>
-    m.db.from('invoices').select('*').eq('id', input.invoice_id).eq('user_id', user.id).single()
-  )
+  const { data: invoice } = await db
+    .from('invoices')
+    .select('*')
+    .eq('id', input.invoice_id)
+    .eq('user_id', user.id)
+    .single<Invoice>()
 
-  if (!invoices) throw new Error('Invoice not found.')
-  if (invoices.status !== 'paid') {
-    throw new Error(`Invoice is ${invoices.status}, not paid. Cannot off-ramp yet.`)
+  if (!invoice) throw new Error('Invoice not found.')
+  if (invoice.status !== 'paid') {
+    throw new Error(`Invoice is ${invoice.status}, not paid. Cannot off-ramp yet.`)
   }
 
-  const netUsdc = invoices.amount_usdc - (invoices.fee_usdc ?? 0)
+  const netUsdc = invoice.amount_usdc - (invoice.fee_usdc ?? 0)
 
-  // Initiate off-ramp
-  const result = await offrampToLocal(
-    netUsdc,
-    user.country as 'AR' | 'MX' | 'BR' | 'CO',
-    user.bank_account
-  )
+  const result = await offrampToLocal(netUsdc, user.country, user.bank_account)
 
-  // Update invoice
-  await updateInvoice(invoices.id, {
+  await updateInvoice(invoice.id, {
     status: 'offramp_pending',
     local_amount: result.localAmount,
     local_currency: result.localCurrency,
@@ -47,5 +43,5 @@ export async function initiateOfframpTool(
     offramp_rate: result.rate,
   })
 
-  return { ...result, invoiceId: invoices.id }
+  return { ...result, invoiceId: invoice.id }
 }

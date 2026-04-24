@@ -87,7 +87,7 @@ USDC on Solana is the only rail that makes sub-$500 freelance payments economica
            ▼
 ┌──────────────────────────────┐
 │  Wagio AI Agent              │
-│  (Google Gemini 2.0 Flash)   │
+│  (Groq / Llama 3.3 70B)      │
 │  - understands intent        │
 │  - calls tools automatically │
 └──┬──────────┬─────────┬──────┘
@@ -118,7 +118,7 @@ USDC on Solana is the only rail that makes sub-$500 freelance payments economica
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | Interface | Telegram Bot (telegraf.js) | Zero-friction UX — no app download needed |
-| AI Agent | Google Gemini 2.0 Flash | Natural language → structured invoice actions |
+| AI Agent | Groq / Llama 3.3 70B | Natural language → structured invoice actions |
 | Blockchain | @solana/pay + @solana/web3.js | Payment links, QR codes, on-chain settlement |
 | Monitoring | Helius Webhooks | Real-time payment detection (~2s) |
 | LATAM Off-ramp | Bitso API | USDC → ARS, MXN, BRL, COP + local bank deposit |
@@ -187,7 +187,7 @@ src/
 
 - Node.js 20+
 - A Telegram bot token from [@BotFather](https://t.me/BotFather)
-- Google AI Studio API key (free) from [aistudio.google.com](https://aistudio.google.com/app/apikey)
+- Groq API key (free) from [console.groq.com](https://console.groq.com)
 - Helius API key (free) from [helius.xyz](https://helius.xyz)
 - Supabase project from [supabase.com](https://supabase.com)
 - Bitso Business account from [bitso.com/business](https://bitso.com/business/developers)
@@ -195,7 +195,7 @@ src/
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/wagio
+git clone https://github.com/owervanz/wagio
 cd wagio
 npm install
 cp .env.example .env
@@ -228,8 +228,9 @@ Set the generated URL as `WEBHOOK_BASE_URL` in `.env` and restart.
 | Variable | Description |
 |----------|-------------|
 | `TELEGRAM_BOT_TOKEN` | From @BotFather |
-| `GOOGLE_API_KEY` | Google AI Studio (Gemini) |
+| `GROQ_API_KEY` | Groq API key (free at console.groq.com) |
 | `HELIUS_API_KEY` | Solana RPC + webhooks |
+| `HELIUS_AUTH_HEADER` | Secret string to validate incoming Helius webhooks |
 | `SOLANA_RPC_URL` | Helius RPC endpoint |
 | `SOLANA_NETWORK` | `devnet` or `mainnet-beta` |
 | `USDC_MINT` | USDC token mint address |
@@ -292,7 +293,7 @@ Set the generated URL as `WEBHOOK_BASE_URL` in `.env` and restart.
 
 Wagio hits all three of Solana Foundation's 2026 priorities:
 
-1. **AI Agents** — Gemini agent handles the full payment pipeline autonomously
+1. **AI Agents** — Groq/Llama agent handles the full payment pipeline autonomously
 2. **Stablecoins as payment rail** — USDC on Solana is the invisible engine
 3. **Consumer adoption without friction** — freelancers never see "blockchain"
 

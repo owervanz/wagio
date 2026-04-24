@@ -1,8 +1,9 @@
 import express from 'express'
 import { parseHeliusPayment } from '../solana/monitor.js'
-import { getInvoiceByReference, updateInvoice, getUserByTelegramId } from '../db/supabase.js'
+import { db, getInvoiceByReference, updateInvoice, type User } from '../db/supabase.js'
 import { offrampToLocal } from '../offramp/bitso.js'
 import { bot } from '../bot.js'
+import { LOCAL_CURRENCY } from '../lib/countries.js'
 
 export const webhookRouter = express.Router()
 
@@ -10,7 +11,14 @@ export const webhookRouter = express.Router()
 // Called by Helius when any USDC transfer hits the merchant wallet
 
 webhookRouter.post('/payment', express.json(), async (req, res) => {
-  res.status(200).send('ok')  // Always respond fast to Helius
+  // Verify Helius auth header before doing anything else
+  if (req.headers.authorization !== process.env.HELIUS_AUTH_HEADER) {
+    console.warn('⚠️  Rejected webhook with invalid auth header from', req.ip)
+    res.status(401).send('unauthorized')
+    return
+  }
+
+  res.status(200).send('ok')  // Respond fast to Helius
 
   try {
     const transactions = Array.isArray(req.body) ? req.body : [req.body]
@@ -48,26 +56,23 @@ webhookRouter.post('/payment', express.json(), async (req, res) => {
         paid_at: new Date().toISOString(),
       })
 
-      // Notify the freelancer via Telegram
-      const user = await getUserByTelegramId(
-        // We need to get the telegram_id from the user_id
-        0  // placeholder — see below
-      )
-
       // Get user via invoice's user_id
-      const { data: userRow } = await import('../db/supabase.js').then(m =>
-        m.db.from('users').select('*').eq('id', invoice!.user_id).single()
-      )
+      const { data: userRow } = await db
+        .from('users')
+        .select('*')
+        .eq('id', invoice.user_id)
+        .single<User>()
 
       if (!userRow) continue
 
       await bot.telegram.sendMessage(
         userRow.telegram_id,
         `💰 *¡Pago recibido!*\n\n` +
-        `Cliente: ${invoice.client_name}\n` +
-        `Monto: $${invoice.amount_usdc} USDC\n` +
-        `Tx: \`${payment.txSignature.slice(0, 12)}...\`\n\n` +
-        `🔄 Iniciando conversión a ${invoice.country === 'AR' ? 'ARS' : invoice.country === 'MX' ? 'MXN' : invoice.country === 'BR' ? 'BRL' : 'COP'}...`,
+        `👤 Cliente: ${invoice.client_name}\n` +
+        `💵 Monto: $${invoice.amount_usdc} USDC\n` +
+        `🔗 Tx: \`${payment.txSignature.slice(0, 12)}...\`\n\n` +
+        `―――――――――――\n\n` +
+        `🔄 Iniciando conversión a ${LOCAL_CURRENCY[invoice.country]}...`,
         { parse_mode: 'Markdown' }
       )
 
@@ -92,10 +97,11 @@ webhookRouter.post('/payment', express.json(), async (req, res) => {
           await bot.telegram.sendMessage(
             userRow.telegram_id,
             `✅ *Conversión iniciada*\n\n` +
-            `1 USDC = ${result.rate.toFixed(2)} ${result.localCurrency}\n` +
-            `*Vas a recibir: ${result.localAmount.toFixed(2)} ${result.localCurrency}*\n` +
-            `Tiempo estimado: ${result.eta}\n\n` +
-            `_Te avisaré cuando acredite_ 🏦`,
+            `📈 1 USDC = ${result.rate.toFixed(2)} ${result.localCurrency}\n` +
+            `💰 Vas a recibir: *${result.localAmount.toFixed(2)} ${result.localCurrency}*\n` +
+            `⏱ Tiempo estimado: ${result.eta}\n\n` +
+            `―――――――――――\n\n` +
+            `_Te aviso cuando acredite en tu cuenta_ 🏦`,
             { parse_mode: 'Markdown' }
           )
         } catch (offrampErr) {
@@ -111,7 +117,8 @@ webhookRouter.post('/payment', express.json(), async (req, res) => {
         await bot.telegram.sendMessage(
           userRow.telegram_id,
           `✅ *Pago recibido*\n\n` +
-          `Para convertir a tu moneda local, configurá tu cuenta bancaria con /setup`,
+          `Para convertir a tu moneda local, configurá tu cuenta bancaria.\n\n` +
+          `Escribí /setup para hacerlo ahora.`,
           { parse_mode: 'Markdown' }
         )
       }

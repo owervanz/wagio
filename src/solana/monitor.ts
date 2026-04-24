@@ -1,9 +1,16 @@
 import axios from 'axios'
 
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY!
+const HELIUS_AUTH_HEADER = process.env.HELIUS_AUTH_HEADER!
 const WEBHOOK_BASE_URL = process.env.WEBHOOK_BASE_URL!
 const MERCHANT_WALLET = process.env.MERCHANT_WALLET_ADDRESS!
 const HELIUS_BASE = `https://api.helius.xyz/v0`
+
+interface HeliusWebhook {
+  webhookID: string
+  webhookURL: string
+  authHeader?: string
+}
 
 // ─── Register Helius webhook on startup ───────────────────────────────────────
 
@@ -11,21 +18,33 @@ export async function registerWebhook(): Promise<void> {
   const webhookUrl = `${WEBHOOK_BASE_URL}/webhook/payment`
 
   try {
-    // Check if webhook already exists
-    const { data: existing } = await axios.get(`${HELIUS_BASE}/webhooks`, {
+    const { data: existing } = await axios.get<HeliusWebhook[]>(`${HELIUS_BASE}/webhooks`, {
       params: { 'api-key': HELIUS_API_KEY },
     })
 
-    const alreadyRegistered = existing?.some(
-      (wh: { webhookURL: string }) => wh.webhookURL === webhookUrl
-    )
+    const current = existing?.find(wh => wh.webhookURL === webhookUrl)
 
-    if (alreadyRegistered) {
-      console.log('✅ Helius webhook already registered')
+    if (current) {
+      // Ensure authHeader is up to date (covers rotation)
+      if (current.authHeader !== HELIUS_AUTH_HEADER) {
+        await axios.put(
+          `${HELIUS_BASE}/webhooks/${current.webhookID}`,
+          {
+            webhookURL: webhookUrl,
+            transactionTypes: ['TRANSFER'],
+            accountAddresses: [MERCHANT_WALLET],
+            webhookType: 'enhanced',
+            authHeader: HELIUS_AUTH_HEADER,
+          },
+          { params: { 'api-key': HELIUS_API_KEY } }
+        )
+        console.log('🔄 Helius webhook authHeader updated')
+      } else {
+        console.log('✅ Helius webhook already registered')
+      }
       return
     }
 
-    // Register new webhook
     await axios.post(
       `${HELIUS_BASE}/webhooks`,
       {
@@ -33,13 +52,13 @@ export async function registerWebhook(): Promise<void> {
         transactionTypes: ['TRANSFER'],
         accountAddresses: [MERCHANT_WALLET],
         webhookType: 'enhanced',
+        authHeader: HELIUS_AUTH_HEADER,
       },
       { params: { 'api-key': HELIUS_API_KEY } }
     )
 
     console.log('✅ Helius webhook registered:', webhookUrl)
   } catch (err) {
-    // Non-fatal — webhook may already exist or sandbox may not support it
     console.warn('⚠️  Could not register Helius webhook:', (err as Error).message)
     console.warn('   In development, use ngrok to expose localhost')
   }
