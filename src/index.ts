@@ -35,10 +35,11 @@ for (const key of required) {
 const app = express()
 
 app.use(cors())
+app.use(express.static('public'))
 app.use('/webhook', webhookRouter)
 
-// Root endpoint for Railway health check
-app.get('/', (_req, res) => {
+// Health check for Railway (doesn't conflict with static index.html)
+app.get('/health', (_req, res) => {
   res.json({
     name: 'Wagio',
     version: '0.1.0',

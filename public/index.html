@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wagio — Cobrate sin vueltas</title>
+  <meta name="description" content="Un mensaje en Telegram. Tu cliente paga en dólares. Vos recibís pesos en tu banco en minutos. Sin apps, sin wallets, sin crypto." />
+  <meta property="og:title" content="Wagio — Cobrate sin vueltas" />
+  <meta property="og:description" content="Un mensaje en Telegram. Tu cliente paga en dólares. Vos recibís pesos en tu banco en minutos." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #14F195;
+      --purple: #9945FF;
+      --bg: #080b10;
+      --surface: #0f1520;
+      --border: rgba(255,255,255,0.08);
+      --text: #e2e8f0;
+      --muted: #64748b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      height: 60px;
+      background: rgba(8,11,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--green), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 9999px;
+      background: var(--green);
+      color: #060a10;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: background .15s, transform .15s;
+    }
+    .btn-primary:hover { background: #00e080; transform: translateY(-1px); }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 6rem 1.5rem 5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(153,69,255,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 60%, rgba(20,241,149,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(20,241,149,0.25);
+      background: rgba(20,241,149,0.08);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1.75rem;
+    }
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.07;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, var(--green) 0%, #60efff 50%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      max-width: 560px;
+      margin: 0 auto 2.25rem;
+      font-size: 1.1rem;
+      line-height: 1.75;
+      color: #94a3b8;
+    }
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 3.5rem;
+    }
+    .btn-primary-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.75rem;
+      border-radius: 9999px;
+      background: var(--green);
+      color: #060a10;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background .15s, transform .15s, box-shadow .15s;
+      box-shadow: 0 0 24px rgba(20,241,149,0.3);
+    }
+    .btn-primary-lg:hover {
+      background: #00e080;
+      transform: translateY(-2px);
+      box-shadow: 0 0 36px rgba(20,241,149,0.45);
+    }
+    .btn-ghost-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.75rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .btn-ghost-lg:hover { background: rgba(255,255,255,0.08); }
+
+    /* ── Metrics ── */
+    .metrics {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2.5rem;
+      position: relative;
+    }
+    .metric { text-align: center; }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.03em;
+    }
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+    .metric-divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
+
+    /* ── Chat preview ── */
+    .chat-preview-wrapper {
+      max-width: 420px;
+      margin: 4rem auto 0;
+      position: relative;
+    }
+    .chat-window {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1rem;
+      background: #161b22;
+      border-bottom: 1px solid var(--border);
+    }
+    .chat-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .chat-name { font-weight: 600; font-size: 0.9rem; color: #fff; }
+    .chat-status { font-size: 0.72rem; color: var(--green); }
+    .chat-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .bubble {
+      max-width: 88%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 14px;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+    .bubble-user {
+      background: var(--purple);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .bubble-bot {
+      background: #1c2333;
+      color: var(--text);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .bubble-bot strong { color: var(--green); }
+    .bubble-time {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+    .bubble-time.right { text-align: right; }
+    .qr-placeholder {
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #060a10;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-align: center;
+      padding: 6px;
+    }
+
+    /* ── Section base ── */
+    section { padding: 5rem 1.5rem; }
+    .section-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .section-sub {
+      font-size: 1rem;
+      color: #94a3b8;
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* ── How it works ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      transition: border-color .2s;
+    }
+    .step-card:hover { border-color: rgba(20,241,149,0.3); }
+    .step-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--green);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.08em;
+    }
+    .step-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .step-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .step-desc { font-size: 0.875rem; color: #94a3b8; line-height: 1.6; }
+
+    /* ── Countries ── */
+    .countries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+    .country-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      transition: border-color .2s, transform .2s;
+    }
+    .country-card:hover { border-color: rgba(20,241,149,0.3); transform: translateY(-2px); }
+    .country-flag { font-size: 2rem; line-height: 1; }
+    .country-name { font-size: 0.95rem; font-weight: 600; color: #fff; }
+    .country-detail { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* ── Comparison ── */
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .compare-table th, .compare-table td {
+      padding: 0.85rem 1.1rem;
+      text-align: center;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-table th {
+      background: #0d1420;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .compare-table th.wagio-col, .compare-table td.wagio-col {
+      background: rgba(20,241,149,0.05);
+      color: var(--green);
+      font-weight: 700;
+    }
+    .compare-table th.wagio-col { color: var(--green); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { text-align: left; color: #94a3b8; }
+    .check { color: var(--green); font-weight: 700; }
+    .cross { color: #ef4444; }
+
+    /* ── Why Solana ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .why-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.4rem;
+    }
+    .why-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: -0.03em;
+    }
+    .why-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+    .why-desc { font-size: 0.875rem; color: #94a3b8; margin-top: 0.6rem; line-height: 1.55; }
+
+    /* ── CTA final ── */
+    .cta-section {
+      text-align: center;
+      padding: 5rem 1.5rem;
+      position: relative;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(153,69,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .cta-sub {
+      font-size: 1rem;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .footer-logo { font-weight: 700; color: #fff; font-size: 0.95rem; }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a { font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color .15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-note { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .metric-divider { display: none; }
+      .compare-table { font-size: 0.78rem; }
+      .compare-table th, .compare-table td { padding: 0.65rem 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-icon">🤖</span>
+      Wagio
+    </a>
+    <div class="nav-links">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#paises">Países</a>
+      <a href="https://github.com/owervanz/wagio" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <a href="https://t.me/wagio_bot" target="_blank" rel="noopener" class="btn-primary">
+      Probar el bot →
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Solana Frontier Hackathon 2026
+    </div>
+
+    <h1>
+      Cobrate en dólares.<br />
+      <span class="gradient-text">Recibí pesos en tu banco.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Un mensaje en Telegram. Tu cliente paga con un QR. Wagio convierte y deposita en tu cuenta en minutos. Sin wallets, sin crypto, sin trámites.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="https://t.me/wagio_bot" target="_blank" rel="noopener" class="btn-primary-lg">
+        🤖 Abrir en Telegram
+      </a>
+      <a href="https://github.com/owervanz/wagio" target="_blank" rel="noopener" class="btn-ghost-lg">
+        Ver código en GitHub
+      </a>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-value">~60 seg</div>
+        <div class="metric-label">De mensaje a link de pago</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric">
+        <div class="metric-value">0.99%</div>
+        <div class="metric-label">Fee total. Sin costos ocultos.</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric">
+        <div class="metric-value">4 países</div>
+        <div class="metric-label">AR · MX · BR · CO</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric">
+        <div class="metric-value">$0</div>
+        <div class="metric-label">Costo de setup</div>
+      </div>
+    </div>
+
+    <!-- Chat preview -->
+    <div class="chat-preview-wrapper">
+      <div class="chat-window">
+        <div class="chat-header">
+          <div class="chat-avatar">🤖</div>
+          <div>
+            <div class="chat-name">Wagio</div>
+            <div class="chat-status">● En línea</div>
+          </div>
+        </div>
+        <div class="chat-body">
+          <div>
+            <div class="bubble bubble-user">Terminé un diseño de $400 para Acme Corp en Buenos Aires</div>
+            <div class="bubble-time right">10:42</div>
+          </div>
+          <div>
+            <div class="bubble bubble-bot">
+              <strong>✅ Factura creada</strong><br/>
+              👤 Cliente: Acme Corp<br/>
+              💵 Monto: $400 USDC<br/>
+              📊 Fee: $4.00 (1%)<br/>
+              💰 Vas a recibir: <strong>$396 USDC</strong><br/><br/>
+              <div class="qr-placeholder">QR<br/>SOLANA PAY</div><br/>
+              <em>Te aviso cuando llegue el pago 🔔</em>
+            </div>
+            <div class="bubble-time">10:42</div>
+          </div>
+          <div>
+            <div class="bubble bubble-bot">
+              <strong>💰 ¡Pago recibido on-chain!</strong><br/>
+              🔄 Convirtiendo $396 USDC → ARS...<br/><br/>
+              <strong>✅ 515,000 ARS transferidos a tu CVU</strong><br/>
+              ⏱ Acreditado en ~3 minutos
+            </div>
+            <div class="bubble-time">10:43</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section id="como-funciona">
+    <div class="container">
+      <div class="section-eyebrow">Cómo funciona</div>
+      <h2 class="section-title">Tres pasos. Cero fricciones.</h2>
+      <p class="section-sub">El freelancer nunca toca crypto. El cliente no necesita una cuenta especial. Wagio hace todo el trabajo invisible.</p>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-number">01 —</div>
+          <div class="step-icon">💬</div>
+          <div class="step-title">Contale a Wagio</div>
+          <div class="step-desc">Mandás un mensaje natural en Telegram. "Terminé un proyecto de $500 para Empresa X." El agente entiende y crea la factura al instante.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02 —</div>
+          <div class="step-icon">📲</div>
+          <div class="step-title">Tu cliente paga con el QR</div>
+          <div class="step-desc">Recibís un QR y un link de pago. Tu cliente lo escanea y paga en dólares desde cualquier parte del mundo. Confirmación en ~2 segundos on-chain.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03 —</div>
+          <div class="step-icon">🏦</div>
+          <div class="step-title">Recibís en tu banco</div>
+          <div class="step-desc">Wagio detecta el pago, convierte automáticamente al mejor rate del momento y deposita en tu CBU, SPEI, PIX o PSE. Sin intervención tuya.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Países -->
+  <section id="paises" style="padding-top: 0;">
+    <div class="container">
+      <div class="section-eyebrow">Cobertura</div>
+      <h2 class="section-title">4 países, depósito directo a tu banco</h2>
+      <p class="section-sub">Wagio convierte USDC a tu moneda local y lo deposita en tu cuenta bancaria sin que tengas que hacer nada.</p>
+
+      <div class="countries-grid">
+        <div class="country-card">
+          <div class="country-flag">🇦🇷</div>
+          <div>
+            <div class="country-name">Argentina</div>
+            <div class="country-detail">ARS · CBU / CVU · 2–5 min</div>
+          </div>
+        </div>
+        <div class="country-card">
+          <div class="country-flag">🇲🇽</div>
+          <div>
+            <div class="country-name">México</div>
+            <div class="country-detail">MXN · SPEI / CLABE · 2–10 min</div>
+          </div>
+        </div>
+        <div class="country-card">
+          <div class="country-flag">🇧🇷</div>
+          <div>
+            <div class="country-name">Brasil</div>
+            <div class="country-detail">BRL · PIX · 1–3 min</div>
+          </div>
+        </div>
+        <div class="country-card">
+          <div class="country-flag">🇨🇴</div>
+          <div>
+            <div class="country-name">Colombia</div>
+            <div class="country-detail">COP · PSE · 10–30 min</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparación -->
+  <section>
+    <div class="container">
+      <div class="section-eyebrow">Comparativa</div>
+      <h2 class="section-title">Por qué Wagio gana</h2>
+      <p class="section-sub">Los freelancers en LATAM pierden hasta $140 de cada $1,000 entre fees y devaluación. Wagio resuelve los dos problemas.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Criterio</th>
+            <th>Payoneer</th>
+            <th>Wise</th>
+            <th class="wagio-col">Wagio ✦</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tiempo de cobro</td>
+            <td>5–10 días</td>
+            <td>2–3 días</td>
+            <td class="wagio-col">~2 minutos</td>
+          </tr>
+          <tr>
+            <td>Fee total</td>
+            <td>3–6%</td>
+            <td>1–2%</td>
+            <td class="wagio-col">0.99%</td>
+          </tr>
+          <tr>
+            <td>Setup</td>
+            <td>30 min + KYC</td>
+            <td>20 min + KYC</td>
+            <td class="wagio-col">Solo Telegram</td>
+          </tr>
+          <tr>
+            <td>Pasos para cobrar</td>
+            <td>15+ clics</td>
+            <td>10+ clics</td>
+            <td class="wagio-col">1 mensaje</td>
+          </tr>
+          <tr>
+            <td>Disponible 24/7</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td class="wagio-col"><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Exposición a devaluación</td>
+            <td><span class="cross">Alta</span></td>
+            <td><span class="cross">Media</span></td>
+            <td class="wagio-col"><span class="check">Ninguna</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Por qué Solana -->
+  <section style="padding-top: 0;">
+    <div class="container">
+      <div class="section-eyebrow">Tech</div>
+      <h2 class="section-title">Solana hace esto posible</h2>
+      <p class="section-sub">Otras blockchains son demasiado lentas o caras para pagos de $100–$500. Solana es el único rail que hace esto viable a escala.</p>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-value">~2 seg</div>
+          <div class="why-label">Settlement time</div>
+          <div class="why-desc">El pago se confirma on-chain antes de que el cliente cierre la app. Sin delays, sin "procesando..."</div>
+        </div>
+        <div class="why-card">
+          <div class="why-value">$0.00025</div>
+          <div class="why-label">Fee por transacción</div>
+          <div class="why-desc">Cobros de $50 son económicamente viables. En Ethereum costaría más de gas que el cobro.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-value">USDC</div>
+          <div class="why-label">Stablecoin nativa</div>
+          <div class="why-desc">Liquidez profunda, emitida por Circle, anclada al dólar. El freelancer no tiene exposición a volatilidad crypto.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-value">Solana Pay</div>
+          <div class="why-label">Protocolo de pagos</div>
+          <div class="why-desc">QR estándar que cualquier wallet soporta. No requiere que el cliente instale nada especial.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="cta-section">
+    <div style="position:relative; z-index:1;">
+      <h2 class="cta-title">Tu próximo cobro,<br/><span class="gradient-text">en minutos.</span></h2>
+      <p class="cta-sub">Probalo gratis. El primer mensaje es suficiente para crear tu primera factura.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center;">
+        <a href="https://t.me/wagio_bot" target="_blank" rel="noopener" class="btn-primary-lg">
+          🤖 Abrir Wagio en Telegram
+        </a>
+        <a href="https://github.com/owervanz/wagio" target="_blank" rel="noopener" class="btn-ghost-lg">
+          Ver código →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="container">
+    <div class="footer-logo">🤖 Wagio</div>
+    <div class="footer-links">
+      <a href="https://t.me/wagio_bot" target="_blank" rel="noopener">Telegram Bot</a>
+      <a href="https://github.com/owervanz/wagio" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://colosseum.com/frontier" target="_blank" rel="noopener">Solana Frontier</a>
+    </div>
+    <div class="footer-note">Built for Solana Frontier Hackathon 2026</div>
+  </footer>
+
+</body>
+</html>
